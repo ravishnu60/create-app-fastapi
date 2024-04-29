@@ -1,7 +1,13 @@
-import os, platform, sys, subprocess, threading, time
+import os, platform, sys, subprocess, threading, time, argparse
 from .source import getFileData
 
 def main():
+
+    parser = argparse.ArgumentParser(prog ='create-app-fastapi', description="Create fastapi project") 
+    parser.add_argument('name', metavar ='NAME', type = str, help ='create a project in this name')
+    parser.add_argument('-v','--version',action='version',
+                    version='%(prog)s 0.0.3', help ="show program's version number and exit")
+    args = parser.parse_args()
 
     curdir= os.getcwd()
     platformOS= platform.system()
@@ -13,7 +19,7 @@ def main():
     RESET = "\033[0m"
 
     # Inputs
-    name= input("Project name: ")
+    name= args.name
     virENV= input("Virtual environment name (default 'venv'): ")
     virENV= virENV if virENV else 'venv'
 
@@ -109,3 +115,5 @@ def main():
     openvs= input("Open project in VS Code? (y/n): ")
     if openvs.lower() == 'y':
         run("code .")
+
+main()

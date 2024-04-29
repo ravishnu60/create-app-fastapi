@@ -7,7 +7,12 @@ setup(
 	author_email="ravishnu60@gmail.com", 
 	packages=find_packages(), 
 	description="Package to create fastapi project", 
-	long_description="A package used to create fastAPI project structure with virtual environment and dependencies.", 
+	long_description="""A package used to create fastAPI project structure with virtual environment and dependencies.
+    Once you install this package use below command to create fastapi project,
+    
+    create-app-fastapi project-name
+    
+    """, 
 	long_description_content_type="text/markdown", 
 	python_requires='>=3.9', 
 	install_requires=[],
