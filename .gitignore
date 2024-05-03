@@ -1,5 +1,5 @@
 __pycache__
 build/
-create_app_fastapi/
+create_app_fastapi*/
 dist/
 notes.txt
