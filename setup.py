@@ -2,11 +2,12 @@ from setuptools import setup, find_packages
 
 setup( 
 	name="create-app-fastapi", 
-	version="0.0.4", 
+	version="0.0.5", 
 	author="Ravishnu", 
 	author_email="ravishnu60@gmail.com", 
 	packages=find_packages(), 
-	description="Package to create fastapi project", 
+    url="https://github.com/ravishnu60/create-app-fastapi.git",
+	description="Library for initializing FastAPI projects - create-app-fastapi", 
 	long_description="""A package used to create fastAPI project structure with virtual environment and dependencies.
     Once you install this package use below command to create fastapi project,
     
