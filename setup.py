@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup( 
 	name="create-app-fastapi", 
-	version="0.0.5", 
+	version="0.0.6", 
 	author="Ravishnu", 
 	author_email="ravishnu60@gmail.com", 
 	packages=find_packages(), 

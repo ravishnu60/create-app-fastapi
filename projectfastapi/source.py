@@ -1,6 +1,6 @@
 # main file data
 def main(name):
-    result= '{"message": "Service started successfully"}'
+    result= '{"message": "Service is running"}'
     return f"""from fastapi import FastAPI
 from APIs import api
 
@@ -28,12 +28,18 @@ def gitignore(venv):
 def auth():
     return """from fastapi.security import OAuth2PasswordBearer
 
-#jwt token, user password encrypt decrypt code here
-
-def getToken():
+#jwt token code here
+def genToken():
     pass
 
-def authenticate(token):
+def authenticate():
+    pass
+
+#user password encrypt decrypt
+def encrypt_pwd():
+    pass
+
+def verify_pwd():
     pass
 """
 

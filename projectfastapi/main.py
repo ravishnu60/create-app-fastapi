@@ -6,7 +6,7 @@ def main():
     parser = argparse.ArgumentParser(prog ='create-app-fastapi', description="Create fastapi project") 
     parser.add_argument('name', metavar ='NAME', type = str, help ='create a project in this name')
     parser.add_argument('-v','--version',action='version',
-                    version='%(prog)s 0.0.5', help ="show program's version number and exit")
+                    version='%(prog)s 0.0.6', help ="show program's version number and exit")
     args = parser.parse_args()
 
     curdir= os.getcwd()
