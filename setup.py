@@ -1,8 +1,9 @@
 from setuptools import setup, find_packages
-
+from projectfastapi.main import version
+print(version)
 setup( 
 	name="create-app-fastapi", 
-	version="0.0.6", 
+	version= version, 
 	author="Ravishnu", 
 	author_email="ravishnu60@gmail.com", 
 	packages=find_packages(), 
@@ -12,6 +13,32 @@ setup(
     Once you install this package use below command to create fastapi project,
     
     create-app-fastapi project-name
+    
+    The Project structure will be created in current working directory.
+    The structure will be,
+    
+		root-folder
+		|-APIs
+		|  |-__init__.py
+		|  |-api.py
+		|-models
+		|  |-__init__.py
+		|  |-model.py
+		|-schemas
+		|  |-__init__.py
+		|  |-schema.py
+		|-settings
+		|  |-__init__.py
+		|  |-auth.py
+		|  |-config.py
+		|  |-db.py
+		|-testcase
+		|  |-__init__.py
+		|  |-test_main.py
+		|-venv
+		|-.gitignore
+		|-main.py
+		|-requirements.txt
     
     """, 
 	long_description_content_type="text/markdown", 

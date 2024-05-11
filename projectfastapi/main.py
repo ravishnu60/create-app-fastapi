@@ -1,12 +1,14 @@
 import os, platform, sys, subprocess, threading, time, argparse
-from source import getFileData
+from .source import getFileData
+
+version= '0.0.8'
 
 def main():
     try:
         parser = argparse.ArgumentParser(prog ='create-app-fastapi', description="Create fastapi project") 
         parser.add_argument('name', metavar ='NAME', type = str, help ='create a project in this name')
         parser.add_argument('-v','--version',action='version',
-                        version='%(prog)s 0.0.6', help ="show program's version number and exit")
+                        version='%(prog)s '+version, help ="show program's version number and exit")
         args = parser.parse_args()
 
         curdir= os.getcwd()
@@ -17,6 +19,15 @@ def main():
         RED = "\033[31m"
         GREEN = "\033[32m"
         RESET = "\033[0m"
+
+        # validate latest version
+        out= subprocess.run("create-app-fastapi -v", shell=True, capture_output=True)
+
+        if not out.stdout.decode('utf-8').split(" ")[1][:-1] == version:
+            print(RED + "Please update the latest version to access new features" + RESET)
+            print("To upgrade use "+GREEN + "pip install create-app-fastapi --upgrade" + RESET)
+            if (input("Do you want to continue with older ? (y/n): ").lower() != 'y'):
+                exit()
 
         # Inputs
         name= args.name
@@ -104,20 +115,17 @@ def main():
             print(RED+'\nError while creating virtual environment'+RESET)
             errorExit(err)
 
-
         # project folders
         project_dirs= ['settings', 'models', 'schemas', 'APIs', 'testcase']
 
         # loop for creating folders
         for dir in project_dirs:
             create_dir(dir)
-
         # creating base files
         base_files= ['main.py', '.gitignore','.env']
         for file in base_files:
             with open(f'{name}/{file}','w') as f:
                 f.writelines(fileData[file])
-
 
         print(f"""{GREEN}Project created successfully!{RESET}
 
@@ -135,9 +143,10 @@ def main():
         threadStop= True
         thread.join()
         errorExit(RED+"Error: Cancelled by user"+RESET)
+        pass
     except Exception as error:
         print(error)
         threadStop= True
         thread.join()
         errorExit(error)
-main()
+        pass

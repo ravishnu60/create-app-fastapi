@@ -3,3 +3,4 @@ build/
 create_app_fastapi*/
 dist/
 notes.txt
+.*
