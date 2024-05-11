@@ -35,7 +35,7 @@ def genToken():
 def authenticate():
     pass
 
-#user password encrypt decrypt
+#user password encrypt verify
 def encrypt_pwd():
     pass
 
@@ -109,6 +109,24 @@ def initial():
     return {"message": "Serive from API routes"}
 """
 
+#api file
+def test_main():
+    return """from fastapi.testclient import TestClient
+from main import app
+
+client = TestClient(app)
+
+# the main service test case
+def test_main():
+    response= client.get('/')
+    assert response.status_code == 200
+
+# the api test case
+def test_api():
+    response= client.get('/api/v1')
+    assert response.status_code == 200
+""" 
+
 def getFileData(name, venv):
     return {
             'auth.py': auth(),
@@ -117,8 +135,9 @@ def getFileData(name, venv):
             'model.py': model(),
             'schema.py': schema(),
             'api.py': api(),
-            'main.py': main(name), 
+            'main.py': main(name),
+            'test_main.py': test_main(),
             '.gitignore':gitignore(venv),
-            '.env':env()
+            '.env':env(),
             }
 
