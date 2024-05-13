@@ -1,7 +1,8 @@
-import os, platform, sys, subprocess, threading, time, argparse
+import os, platform, sys, subprocess, threading, time, argparse, urllib, json
+import urllib.request
 from .source import getFileData
 
-version= '0.0.8'
+version= '0.0.9'
 
 def main():
     try:
@@ -21,24 +22,31 @@ def main():
         RESET = "\033[0m"
 
         # validate latest version
-        out= subprocess.run("create-app-fastapi -v", shell=True, capture_output=True)
-
-        if not out.stdout.decode('utf-8').split(" ")[1][:-1] == version:
+        library_name= 'create-app-fastapi'
+        pypi_url = f'https://pypi.org/pypi/{library_name}/json'
+        response = urllib.request.urlopen(pypi_url).read().decode()
+        if version != max(json.loads(response)['releases'].keys()):
             print(RED + "Please update the latest version to access new features" + RESET)
             print("To upgrade use "+GREEN + "pip install create-app-fastapi --upgrade" + RESET)
             if (input("Do you want to continue with older ? (y/n): ").lower() != 'y'):
                 exit()
 
-        # Inputs
-        name= args.name
-        virENV= input("Virtual environment name (default 'venv'): ")
-        virENV= virENV if virENV else 'venv'
-        dependencies= ['fastapi[all]','sqlalchemy','pytest']
+                # display loading
+        def loading():
+            load= 0
+            symbol=['*   ',' *  ','  * ','   *']
+            while True:
+                print("\r", end="")
+                print("Setup virtual environment and installing dependencies", end="")
+                print(GREEN,symbol[load],RESET, end="")
+                load +=1
+                time.sleep(0.5)
+                if load >= 3:   load= 0
+                if threadStop:    
+                    print()
+                    break
 
-        # get file data
-        fileData= getFileData(name, virENV)
-
-        # create folders and files
+                # create folders and files
         def create_dir(folderName, base= False):
             fullFolderName= folderName if base else os.path.join(name, folderName)
             files= {'settings':['auth.py','config.py','db.py'], 'models':['model.py'],'schemas':['schema.py'],'APIs':['api.py'],'testcase':['test_main.py']}
@@ -58,21 +66,6 @@ def main():
             except Exception as err:
                 exit(err)
 
-        # display loading
-        def loading():
-            load= 0
-            symbol=['*   ',' *  ','  * ','   *']
-            while True:
-                print("\r", end="")
-                print("Setup virtual environment and installing dependencies", end="")
-                print(GREEN,symbol[load],RESET, end="")
-                load +=1
-                time.sleep(0.5)
-                if load >= 3:   load= 0
-                if threadStop:    
-                    print()
-                    break
-
         # execute system cmd using subprocess
         def run(cmd):
             status= subprocess.run(cmd, shell=True,cwd=os.path.join(curdir, name),capture_output=True)
@@ -86,6 +79,27 @@ def main():
 
         # thread for display loading same time of execute cmd
         thread= threading.Thread(target=loading)
+
+        # Inputs
+        name= args.name
+        virENV= input("Virtual environment name (default 'venv'): ")
+        db_data={}
+        if input("Continue with database setup ? (y/n): ").lower() == 'y':
+            db_data.update( {
+                'db':input("Database (mysql or postgresql): "),
+                'database':input("Database name: "),
+                'dbuser':input("Database user : "),
+                'password':input("Database password: "),
+                'host':input("Database host (default 'localhost'): "),
+                'port':input("Database port: "),
+            })
+        virENV= virENV if virENV else 'venv'
+        dependencies= ['fastapi[all]','sqlalchemy','pytest']
+        dependencies.append('psycopg2') if db_data.get('db').lower()=='postgresql' else dependencies.append('mysql-connector-python')
+
+        # get file data
+        fileData= getFileData(name, virENV, db_data)
+
 
         # create project directory
         create_dir(name, base= True)

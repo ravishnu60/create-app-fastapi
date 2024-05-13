@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 from projectfastapi.main import version
-print(version)
+
 setup( 
 	name="create-app-fastapi", 
 	version= version, 
@@ -10,9 +10,11 @@ setup(
     url="https://github.com/ravishnu60/create-app-fastapi.git",
 	description="Library for initializing FastAPI projects - create-app-fastapi", 
 	long_description="""A package used to create fastAPI project structure with virtual environment and dependencies.
+    Can setup database connection while createing a project.
     Once you install this package use below command to create fastapi project,
     
     create-app-fastapi project-name
+	
     
     The Project structure will be created in current working directory.
     The structure will be,
@@ -40,6 +42,8 @@ setup(
 		|-main.py
 		|-requirements.txt
     
+        
+        ____________________________________________ Happy coding !!! __________________________________________
     """, 
 	long_description_content_type="text/markdown", 
 	python_requires='>=3.9', 

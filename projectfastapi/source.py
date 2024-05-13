@@ -20,7 +20,8 @@ app.include_router(api.app)
 # gitignore file data
 def gitignore(venv):
     return f"""__pycache__
-{venv}
+    .pytest_cache
+{venv}/
 .env
 """
 
@@ -44,13 +45,19 @@ def verify_pwd():
 """
 
 # env file
-def env():
+def env(data:dict):
     return """# environment varibales here
 DATABASE=<dbname>
 DBUSER=<dbusername>
 PASSWORD=<db password>
 HOST=<db host>
 PORT=<db port>
+""" if not data.keys() else f"""# environment varibales here
+DATABASE={data['database']}
+DBUSER={data['dbuser']}
+PASSWORD={data['password']}
+HOST={'localhost' if data['host']=='' else data['host']}
+PORT={data['port']}
 """
 
 # config file
@@ -72,13 +79,48 @@ secret= Secret()
 """
 
 #db file
-def db():
-    return"""from sqlalchemy import create_engine, URL
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from config import secret
+def db(data:dict):
+    db= False
+    if data.keys():
+        if data['db'].lower()=='mysql':
+            driver= 'mysql+mysqlconnector'
+        else:
+            driver= 'postgresql'
+        db=f"""
+db_url= URL.create(
+    drivername= '{driver}',
+    username= secret.dbuser,
+    password= secret.password,
+    host= secret.host,
+    port= secret.port
+)
+
+engine= create_engine(db_url, pool_pre_ping= True)
+session_local= sessionmaker(autocommit= False, autoflush= False, bind= engine)
+Base= declarative_base()
+
+def get_db():
+    db= session_local()
+    try:
+        yield db
+    finally:
+        db.close()
+
+try:
+    db= session_local()
+    db.execute(text('SELECT 1'))
+    print('\\n----- Connected to db! -----')
+except Exception as e:
+    print('\\n----- Connection failed! ERROR : ', e)
+
+"""
+
+    return f"""from sqlalchemy import create_engine, URL, {'text' if db else ''}
+from sqlalchemy.orm import sessionmaker, declarative_base
+from settings.config import secret
 
 # database connection code here
+{db if db else ''}
 """
 #model file
 def model():
@@ -98,6 +140,7 @@ class Sample(BaseModel):
 #api file
 def api():
     return """from fastapi import APIRouter
+from settings.db import get_db
 
 # api code here
 app= APIRouter(
@@ -127,17 +170,17 @@ def test_api():
     assert response.status_code == 200
 """ 
 
-def getFileData(name, venv):
+def getFileData(name, venv, db_data):
     return {
             'auth.py': auth(),
             'config.py': config(),
-            'db.py': db(),
+            'db.py': db(db_data),
             'model.py': model(),
             'schema.py': schema(),
             'api.py': api(),
             'main.py': main(name),
             'test_main.py': test_main(),
             '.gitignore':gitignore(venv),
-            '.env':env(),
+            '.env':env(db_data),
             }
 
