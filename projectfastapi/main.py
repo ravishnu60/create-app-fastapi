@@ -2,7 +2,7 @@ import os, platform, sys, subprocess, threading, time, argparse, urllib, json
 import urllib.request
 from .source import getFileData
 
-version= '0.0.9'
+version= '0.1.0'
 
 def main():
     try:

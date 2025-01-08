@@ -35,13 +35,6 @@ def genToken():
 
 def authenticate():
     pass
-
-#user password encrypt verify
-def encrypt_pwd():
-    pass
-
-def verify_pwd():
-    pass
 """
 
 # env file
