@@ -87,6 +87,7 @@ def db(data:dict):
         db=f"""
 db_url= URL.create(
     drivername= '{driver}',
+    database= secret.database,
     username= secret.dbuser,
     password= secret.password,
     host= secret.host,

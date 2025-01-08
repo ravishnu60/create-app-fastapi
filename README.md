@@ -1,6 +1,6 @@
 # **create-app-fastapi**  
 
-A simple CLI tool to creating a FastAPI project with a predefined structure, including APIs,DB, models, schemas, and settings for a quick start to development.
+A simple CLI tool for generating FastAPI projects with a predefined structure, including APIs, database setup, models, schemas, and configuration files, enabling a quick start to development.
 
 ### **Installation**
 To install this package, use the following command:  

@@ -2,7 +2,7 @@ import os, platform, sys, subprocess, threading, time, argparse, urllib, json
 import urllib.request
 from .source import getFileData
 
-version= '0.1.0'
+version= '0.1.3'
 
 def main():
     try:
@@ -87,6 +87,7 @@ def main():
         db_input= input("Continue with database setup ? (y/n): ")
         default_credentials=[{"name":"postgres", "port":"5432"}, {"name":"root", "port": '3306'}]
         if db_input and db_input.lower() == 'y':
+            print(f"""{GREEN}You can update Database details later in .env file!{RESET}""")
             db= input("Database (mysql or postgresql, default 'postgresql'): ")
             index= 0
             if db and db.lower() == 'mysql':
@@ -99,7 +100,7 @@ def main():
                 'host':input("Database host (default 'localhost'): "),
                 'port':input(f"Database port (default '{default_credentials[index]['port']}'): "),
             })
-            print(f"""{GREEN}You can update Database details later in .env file!{RESET}""")
+
         virENV= virENV if virENV else 'venv'
         dependencies= ['fastapi[all]','sqlalchemy','SQLAlchemy-Utils','pytest']
         if db_data.get('db'):
