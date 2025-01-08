@@ -46,18 +46,23 @@ def verify_pwd():
 
 # env file
 def env(data:dict):
-    return """# environment varibales here
+    if not data.keys():
+            return """# environment varibales here
 DATABASE=<dbname>
 DBUSER=<dbusername>
 PASSWORD=<db password>
 HOST=<db host>
 PORT=<db port>
-""" if not data.keys() else f"""# environment varibales here
-DATABASE={data['database']}
-DBUSER={data['dbuser']}
-PASSWORD={data['password']}
+"""
+    else:
+        default_credentials=[{"name":"postgres", "port":"5432"}, {"name":"root", "port": '3306'}]
+        index= 1 if data['db'].lower() == 'mysql' else 0
+        return f"""# environment varibales here
+DATABASE={default_credentials[index]['name'] if data['database'] == '' else data['database']}
+DBUSER={default_credentials[index]['name'] if data['dbuser'] == '' else data['dbuser']}
+PASSWORD={default_credentials[index]['name'] if data['password'] == '' else data['password']}
 HOST={'localhost' if data['host']=='' else data['host']}
-PORT={data['port']}
+PORT={default_credentials[index]['port'] if data['port'] == '' else data['port']}
 """
 
 # config file
@@ -96,6 +101,12 @@ db_url= URL.create(
 )
 
 engine= create_engine(db_url, pool_pre_ping= True)
+
+# create db if not exist
+if not database_exists(engine.url):
+    create_database(engine.url)
+    print('----- Database created! -----')
+
 session_local= sessionmaker(autocommit= False, autoflush= False, bind= engine)
 Base= declarative_base()
 
@@ -118,6 +129,7 @@ except Exception as e:
     return f"""from sqlalchemy import create_engine, URL, {'text' if db else ''}
 from sqlalchemy.orm import sessionmaker, declarative_base
 from settings.config import secret
+from sqlalchemy_utils import database_exists, create_database
 
 # database connection code here
 {db if db else ''}

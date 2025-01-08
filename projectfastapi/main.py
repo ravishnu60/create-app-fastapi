@@ -84,18 +84,26 @@ def main():
         name= args.name
         virENV= input("Virtual environment name (default 'venv'): ")
         db_data={}
-        if input("Continue with database setup ? (y/n): ").lower() == 'y':
+        db_input= input("Continue with database setup ? (y/n): ")
+        default_credentials=[{"name":"postgres", "port":"5432"}, {"name":"root", "port": '3306'}]
+        if db_input and db_input.lower() == 'y':
+            db= input("Database (mysql or postgresql, default 'postgresql'): ")
+            index= 0
+            if db and db.lower() == 'mysql':
+                index= 1
             db_data.update( {
-                'db':input("Database (mysql or postgresql): "),
-                'database':input("Database name: "),
-                'dbuser':input("Database user : "),
-                'password':input("Database password: "),
+                'db': db if db else 'postgresql',
+                'database':input(f"Database name (default '{default_credentials[index]['name']}'): "),
+                'dbuser':input(f"Database user (default '{default_credentials[index]['name']}'): "),
+                'password':input(f"Database password (default '{default_credentials[index]['name']}'): "),
                 'host':input("Database host (default 'localhost'): "),
-                'port':input("Database port: "),
+                'port':input(f"Database port (default '{default_credentials[index]['port']}'): "),
             })
+            print(f"""{GREEN}You can update Database details later in .env file!{RESET}""")
         virENV= virENV if virENV else 'venv'
-        dependencies= ['fastapi[all]','sqlalchemy','pytest']
-        dependencies.append('psycopg2') if db_data.get('db').lower()=='postgresql' else dependencies.append('mysql-connector-python')
+        dependencies= ['fastapi[all]','sqlalchemy','SQLAlchemy-Utils','pytest']
+        if db_data.get('db'):
+            dependencies.append('psycopg2') if db_data.get('db').lower()=='postgresql' else dependencies.append('mysql-connector-python')
 
         # get file data
         fileData= getFileData(name, virENV, db_data)
