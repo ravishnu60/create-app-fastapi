@@ -1,6 +1,6 @@
 # main file data
 def main(name):
-    result= '{"message": "Service is running"}'
+    result= '{"message": "'+str(name)+' API service is started"}'
     return f"""from fastapi import FastAPI
 from APIs import api
 
@@ -126,7 +126,7 @@ from settings.config import secret
 from sqlalchemy_utils import database_exists, create_database
 
 # database connection code here
-{db if db else 'def get_db():\n\tpass'}
+{db if db else 'def get_db(): pass'}
 """
 #model file
 def model():
@@ -155,7 +155,7 @@ app= APIRouter(
 )
 @app.get('/')
 def initial():
-    return {"message": "Serive from API routes"}
+    return {"message": "Example service in api routes"}
 """
 
 #api file

@@ -11,11 +11,11 @@ setup(
 	author_email="ravishnu60@gmail.com", 
 	packages=find_packages(), 
     url="https://github.com/ravishnu60/create-app-fastapi.git",
-	description="Library for initializing FastAPI projects - create-app-fastapi", 
+	description="Library for initializing FastAPI project structure - create-app-fastapi", 
 	long_description_content_type="text/markdown",	
 	long_description= long_description, 
 	python_requires='>=3.9', 
-		install_requires=['requests'],
+	install_requires=['requests'],
 	entry_points ={ 
 		'console_scripts': [ 
 			'create-app-fastapi=projectfastapi.main:main'

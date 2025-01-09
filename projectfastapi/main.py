@@ -1,7 +1,7 @@
 import os, platform, sys, subprocess, threading, time, argparse, requests, shutil
 from .source import getFileData
 
-version= '0.1.4'
+version= '0.1.5'
 
 def main():
     try:
