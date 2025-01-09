@@ -1,8 +1,7 @@
-import os, platform, sys, subprocess, threading, time, argparse, urllib, json
-import urllib.request
+import os, platform, sys, subprocess, threading, time, argparse, requests, shutil
 from .source import getFileData
 
-version= '0.1.3'
+version= '0.1.4'
 
 def main():
     try:
@@ -20,18 +19,8 @@ def main():
         RED = "\033[31m"
         GREEN = "\033[32m"
         RESET = "\033[0m"
-
-        # validate latest version
-        library_name= 'create-app-fastapi'
-        pypi_url = f'https://pypi.org/pypi/{library_name}/json'
-        response = urllib.request.urlopen(pypi_url).read().decode()
-        if version != max(json.loads(response)['releases'].keys()):
-            print(RED + "Please update the latest version to access new features" + RESET)
-            print("To upgrade use "+GREEN + "pip install create-app-fastapi --upgrade" + RESET)
-            if (input("Do you want to continue with older ? (y/n): ").lower() != 'y'):
-                exit()
-
-                # display loading
+        
+        # display loading
         def loading():
             load= 0
             symbol=['*   ',' *  ','  * ','   *']
@@ -74,11 +63,24 @@ def main():
         
         # function to delete project if error
         def errorExit(error):
-            run(f"rm -rf {os.path.join(curdir, name)}")
+            try:
+                shutil.rmtree("test")
+                # run(f"rm -rf {os.path.join(curdir, name)}")
+            except:
+                pass
             exit(F"{error}\n")
 
         # thread for display loading same time of execute cmd
         thread= threading.Thread(target=loading)
+
+        # validate latest version
+        data= requests.get("https://pypi.org/pypi/create-app-fastapi/json")
+        if version != data.json()['info']['version']:
+            print(RED + "Please update the latest version to access new features" + RESET)
+            print("To upgrade use "+GREEN + "pip install create-app-fastapi --upgrade" + RESET)
+            stop= input("Do you want to continue with older ? (y/n): ")
+            if (stop=='' or stop.lower() != 'y'):
+                exit(RED+"Error: Cancelled, because of older version "+RESET)
 
         # Inputs
         name= args.name
@@ -102,7 +104,7 @@ def main():
             })
 
         virENV= virENV if virENV else 'venv'
-        dependencies= ['fastapi[all]','sqlalchemy','SQLAlchemy-Utils','pytest']
+        dependencies= ['fastapi[standard]','pydantic_settings','sqlalchemy','SQLAlchemy-Utils','pytest']
         if db_data.get('db'):
             dependencies.append('psycopg2') if db_data.get('db').lower()=='postgresql' else dependencies.append('mysql-connector-python')
 
@@ -125,8 +127,8 @@ def main():
 
             elif platformOS == 'Windows':
                 run(f"{sys.executable} -m venv {virENV}")
-                run(f"{virENV}\Scripts\pip.exe install {' '.join(dependencies)}")
-                run(f"{virENV}\Scripts\pip3.exe freeze > requirements.txt")
+                run(f"{virENV}\\Scripts\\pip.exe install {' '.join(dependencies)}")
+                run(f"{virENV}\\Scripts\\pip3.exe freeze > requirements.txt")
         except Exception as error:
             err=error
 
@@ -164,12 +166,18 @@ def main():
         return
     except KeyboardInterrupt:
         threadStop= True
-        thread.join()
-        errorExit(RED+"Error: Cancelled by user"+RESET)
+        try: 
+            thread.join()
+        except: 
+            pass
+        errorExit("\n"+RED+"Error: Cancelled by user"+RESET)
         pass
     except Exception as error:
         print(error)
         threadStop= True
-        thread.join()
+        try: 
+            thread.join()
+        except: 
+            pass
         errorExit(error)
         pass

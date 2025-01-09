@@ -120,13 +120,13 @@ except Exception as e:
 
 """
 
-    return f"""from sqlalchemy import create_engine, URL, {'text' if db else ''}
+    return f"""from sqlalchemy import create_engine, URL {', text' if db else ''}
 from sqlalchemy.orm import sessionmaker, declarative_base
 from settings.config import secret
 from sqlalchemy_utils import database_exists, create_database
 
 # database connection code here
-{db if db else ''}
+{db if db else 'def get_db():\n\tpass'}
 """
 #model file
 def model():

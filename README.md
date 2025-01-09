@@ -11,8 +11,17 @@ pip install create-app-fastapi
 ### **Usage**
 After installation, create a new FastAPI project by running:  
 ```bash
-pip install create-app-fastapi
+create-app-fastapi project-name
 ```
+Navigate to the project directory
+```bash
+cd project-name
+```
+Start the development server
+```bash
+fastapi dev main.py
+```
+Your FastAPI is now up and running on port 8000! 🚀
 
 ### **Output**
 The generated project will have the following structure:

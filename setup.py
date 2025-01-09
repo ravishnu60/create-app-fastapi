@@ -15,11 +15,11 @@ setup(
 	long_description_content_type="text/markdown",	
 	long_description= long_description, 
 	python_requires='>=3.9', 
-	install_requires=[],
+		install_requires=['requests'],
 	entry_points ={ 
 		'console_scripts': [ 
 			'create-app-fastapi=projectfastapi.main:main'
 		] 
 	},
-    keywords=['fastapi', 'fastapi project','project structure','api structure', 'python fastapi project structure']
+    keywords=['create-app-fastapi','create','fastapi', 'fastapi project','project structure','api structure', 'python fastapi project structure']
 ) 
