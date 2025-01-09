@@ -64,7 +64,7 @@ def main():
         # function to delete project if error
         def errorExit(error):
             try:
-                shutil.rmtree("test")
+                shutil.rmtree(os.path.join(curdir, name))
                 # run(f"rm -rf {os.path.join(curdir, name)}")
             except:
                 pass
